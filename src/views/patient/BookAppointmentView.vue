@@ -112,7 +112,7 @@
     <Card v-if="step === 3">
       <CardHeader>
         <CardTitle>Select Date</CardTitle>
-        <CardDescription>Choose an available date</CardDescription>
+        <CardDescription>Choose an available date for {{ selectedDoctor?.firstName }}</CardDescription>
       </CardHeader>
       <CardContent>
         <div class="flex justify-center">
@@ -123,6 +123,16 @@
             @update:model-value="onDateSelect"
             class="rounded-md border"
           />
+        </div>
+        <div class="mt-4 flex gap-4 justify-center text-xs text-gray-500">
+          <div class="flex items-center gap-1">
+            <div class="w-3 h-3 bg-blue-50 border border-blue-200 rounded"></div>
+            <span>Selected</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <div class="w-3 h-3 bg-gray-100 border border-gray-200 rounded"></div>
+            <span>Unavailable</span>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -136,7 +146,12 @@
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div class="grid grid-cols-4 md:grid-cols-6 gap-2">
+        <div v-if="timeSlots.length === 0" class="text-center py-12">
+          <Clock class="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <p class="text-gray-500">No available slots for this duration on the selected date.</p>
+          <Button variant="outline" class="mt-4" @click="step = 2">Change Duration</Button>
+        </div>
+        <div v-else class="grid grid-cols-4 md:grid-cols-6 gap-2">
           <Button
             v-for="slot in timeSlots"
             :key="slot.time"
@@ -176,13 +191,12 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Clock, User } from 'lucide-vue-next';
-import type { Doctor, TimeSlot } from '@/types';
+import type { Doctor, TimeSlot, WeeklySchedule, DoctorSchedule } from '@/types';
 import {
   DateFormatter,
   type DateValue,
   getLocalTimeZone,
   today,
-  CalendarDate,
   getDayOfWeek
 } from '@internationalized/date';
 
@@ -209,31 +223,82 @@ const MOCK_DOCTORS: Doctor[] = [
     licenseNumber: 'MD12346',
     consultationFee: 150,
   },
-  {
-    id: '6',
-    email: 'doctor3@clinic.com',
-    firstName: 'Dr. Emily',
-    lastName: 'Rodriguez',
-    role: 'doctor',
-    specialization: 'Pediatrics',
-    licenseNumber: 'MD12347',
-    consultationFee: 120,
-  },
 ];
 
-const generateTimeSlots = (duration: number): TimeSlot[] => {
-  const slots: TimeSlot[] = [];
-  const startHour = 9;
-  const endHour = 17;
+// Mock data (sync with DoctorSchedulesView.vue)
+const weeklySchedules = ref<WeeklySchedule[]>([
+  { id: 'w1', doctorId: '2', dayOfWeek: 1, startTime: '09:00', endTime: '17:00', slotDuration: 30, isActive: true },
+  { id: 'w2', doctorId: '2', dayOfWeek: 3, startTime: '09:00', endTime: '17:00', slotDuration: 30, isActive: true },
+  { id: 'w3', doctorId: '5', dayOfWeek: 2, startTime: '10:00', endTime: '18:00', slotDuration: 30, isActive: true },
+]);
 
-  for (let hour = startHour; hour < endHour; hour++) {
-    for (let minute = 0; minute < 60; minute += duration) {
-      const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-      slots.push({
-        time,
-        available: Math.random() > 0.3,
-      });
+const exceptions = ref<DoctorSchedule[]>([
+  {
+    id: 'e1',
+    doctorId: '2',
+    doctorName: 'Dr. Sarah Smith',
+    date: '2026-04-22',
+    startTime: '09:00',
+    endTime: '13:00',
+    slotDuration: 30,
+    isAvailable: false,
+    reason: 'Medical Conference',
+  },
+]);
+
+const getDoctorAvailabilityForDate = (doctorId: string, date: DateValue) => {
+  const dayOfWeek = getDayOfWeek(date, 'en-US');
+  const dateStr = date.toString();
+
+  // 1. Check Exceptions first (they override)
+  const exception = exceptions.value.find(e => e.doctorId === doctorId && e.date === dateStr);
+  if (exception) {
+    return exception.isAvailable 
+      ? { startTime: exception.startTime, endTime: exception.endTime, isAvailable: true }
+      : { isAvailable: false };
+  }
+
+  // 2. Check Weekly Pattern
+  const weekly = weeklySchedules.value.find(w => w.doctorId === doctorId && w.dayOfWeek === dayOfWeek && w.isActive);
+  if (weekly) {
+    return { startTime: weekly.startTime, endTime: weekly.endTime, isAvailable: true };
+  }
+
+  return { isAvailable: false };
+};
+
+const generateTimeSlots = (doctorId: string, date: DateValue, duration: number): TimeSlot[] => {
+  const availability = getDoctorAvailabilityForDate(doctorId, date);
+  if (!availability.isAvailable || !availability.startTime || !availability.endTime) {
+    return [];
+  }
+
+  const slots: TimeSlot[] = [];
+  const [startH, startM] = availability.startTime.split(':').map(Number);
+  const [endH, endM] = availability.endTime.split(':').map(Number);
+
+  let currentHour = startH;
+  let currentMin = startM;
+
+  while (currentHour < endH || (currentHour === endH && currentMin < endM)) {
+    const time = `${currentHour.toString().padStart(2, '0')}:${currentMin.toString().padStart(2, '0')}`;
+    
+    // Check if slot fits before end time
+    const nextMin = currentMin + duration;
+    const nextHour = currentHour + Math.floor(nextMin / 60);
+    const finalNextMin = nextMin % 60;
+
+    if (nextHour > endH || (nextHour === endH && finalNextMin > endM)) {
+      break;
     }
+
+    slots.push({
+      time,
+      available: true, // In a real app, check against existing appointments
+    });
+
+    currentHour = nextHour;
+    currentMin = finalNextMin;
   }
 
   return slots;
@@ -246,7 +311,8 @@ const selectedSlot = ref<string | null>(null);
 const slotDuration = ref<number>(30);
 
 const timeSlots = computed(() => {
-  return selectedDate.value ? generateTimeSlots(slotDuration.value) : [];
+  if (!selectedDoctor.value || !selectedDate.value) return [];
+  return generateTimeSlots(selectedDoctor.value.id, selectedDate.value, slotDuration.value);
 });
 
 const df = new DateFormatter('en-US', {
@@ -260,16 +326,16 @@ const formattedSelectedDate = computed(() => {
   return df.format(selectedDate.value.toDate(getLocalTimeZone()));
 });
 
-// We disable past dates and Sundays based on standard UI Calendar practices
 const isDateDisabled = (date: DateValue) => {
   if (date.compare(today(getLocalTimeZone())) < 0) {
-    return true; // past date
+    return true;
   }
-  // Disable Sunday (0 == Sunday in standard, but for internationalized/date getDayOfWeek returns 0 for Sunday in some locales, let's use week identifier)
-  if (getDayOfWeek(date, 'en-US') === 0) {
-    return true; // Sunday
-  }
-  return false;
+  
+  if (!selectedDoctor.value) return false;
+
+  // Check if doctor has any availability (weekly or exception) on this day
+  const availability = getDoctorAvailabilityForDate(selectedDoctor.value.id, date);
+  return !availability.isAvailable;
 };
 
 const selectDoctor = (doctor: Doctor) => {
@@ -303,11 +369,9 @@ const handleBack = () => {
 
 const handleBooking = () => {
   if (!selectedDoctor.value || !selectedDate.value || !selectedSlot.value) {
-    // toast.error('Please complete all steps');
     return;
   }
 
-  // toast.success('Appointment booked successfully!');
   setTimeout(() => {
     handleNavigate('dashboard');
   }, 1500);

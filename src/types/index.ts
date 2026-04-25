@@ -83,12 +83,22 @@ export interface DoctorSchedule {
   id: string;
   doctorId: string;
   doctorName: string;
-  date: string;
+  date: string; // YYYY-MM-DD
   startTime: string;
   endTime: string;
-  slotDuration: number; // 15 or 30 minutes
+  slotDuration: number;
   isAvailable: boolean;
-  reason?: string; // for blocked slots
+  reason?: string;
+}
+
+export interface WeeklySchedule {
+  id: string;
+  doctorId: string;
+  dayOfWeek: number; // 0-6 (Sunday-Saturday)
+  startTime: string;
+  endTime: string;
+  slotDuration: number;
+  isActive: boolean;
 }
 
 export interface TimeSlot {

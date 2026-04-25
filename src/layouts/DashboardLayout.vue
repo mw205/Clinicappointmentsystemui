@@ -179,7 +179,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Appointments', icon: Calendar, path: 'appointments', roles: ['patient', 'doctor', 'receptionist'] },
   { label: 'Medical Records', icon: FileText, path: 'records', roles: ['patient', 'doctor'] },
   { label: 'Queue Management', icon: Clock, path: 'queue', roles: ['receptionist', 'doctor'] },
-  { label: 'Doctor Schedules', icon: ClipboardList, path: 'schedules', roles: ['receptionist', 'admin'] },
+  { label: 'Doctor Schedules', icon: ClipboardList, path: 'schedules', roles: ['receptionist', 'admin', 'doctor'] },
   { label: 'Analytics', icon: BarChart3, path: 'analytics', roles: ['admin'] },
   { label: 'User Management', icon: Users, path: 'users', roles: ['admin'] },
 ];

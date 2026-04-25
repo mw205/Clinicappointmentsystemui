@@ -28,6 +28,7 @@ const router = createRouter({
         
         // Doctor routes
         { path: 'doctor/dashboard', name: 'doctor-dashboard', component: () => import('@/views/doctor/DoctorDashboardView.vue') },
+        { path: 'doctor/schedules', name: 'doctor-schedules', component: () => import('@/views/receptionist/DoctorSchedulesView.vue') },
         { path: 'doctor/emr-form', name: 'doctor-emr-form', component: () => import('@/views/doctor/EMRFormView.vue') },
         { path: 'doctor/records', name: 'doctor-records', component: () => import('@/views/patient/MedicalRecordsView.vue') }, // Uses same component
         
