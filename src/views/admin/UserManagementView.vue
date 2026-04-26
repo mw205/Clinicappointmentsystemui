@@ -222,102 +222,92 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Search, Plus, Edit, Trash2, Download } from 'lucide-vue-next';
+<script setup>
+import { ref, computed } from "vue";
 // import { toast } from 'vue-sonner';
-import type { User, UserRole } from '@/types';
 
-const MOCK_USERS: User[] = [
+const MOCK_USERS = [
   {
-    id: '1',
-    email: 'patient@clinic.com',
-    firstName: 'John',
-    lastName: 'Doe',
-    role: 'patient',
-    phone: '+1234567890',
+    id: "1",
+    email: "patient@clinic.com",
+    firstName: "John",
+    lastName: "Doe",
+    role: "patient",
+    phone: "+1234567890",
   },
   {
-    id: '2',
-    email: 'doctor@clinic.com',
-    firstName: 'Dr. Sarah',
-    lastName: 'Smith',
-    role: 'doctor',
-    phone: '+1234567891',
+    id: "2",
+    email: "doctor@clinic.com",
+    firstName: "Dr. Sarah",
+    lastName: "Smith",
+    role: "doctor",
+    phone: "+1234567891",
   },
   {
-    id: '3',
-    email: 'reception@clinic.com',
-    firstName: 'Emily',
-    lastName: 'Johnson',
-    role: 'receptionist',
-    phone: '+1234567892',
+    id: "3",
+    email: "reception@clinic.com",
+    firstName: "Emily",
+    lastName: "Johnson",
+    role: "receptionist",
+    phone: "+1234567892",
   },
   {
-    id: '4',
-    email: 'admin@clinic.com',
-    firstName: 'Admin',
-    lastName: 'User',
-    role: 'admin',
-    phone: '+1234567893',
+    id: "4",
+    email: "admin@clinic.com",
+    firstName: "Admin",
+    lastName: "User",
+    role: "admin",
+    phone: "+1234567893",
   },
   {
-    id: '5',
-    email: 'jane.patient@example.com',
-    firstName: 'Jane',
-    lastName: 'Wilson',
-    role: 'patient',
-    phone: '+1234567894',
+    id: "5",
+    email: "jane.patient@example.com",
+    firstName: "Jane",
+    lastName: "Wilson",
+    role: "patient",
+    phone: "+1234567894",
   },
   {
-    id: '6',
-    email: 'dr.chen@clinic.com',
-    firstName: 'Dr. Michael',
-    lastName: 'Chen',
-    role: 'doctor',
-    phone: '+1234567895',
+    id: "6",
+    email: "dr.chen@clinic.com",
+    firstName: "Dr. Michael",
+    lastName: "Chen",
+    role: "doctor",
+    phone: "+1234567895",
   },
 ];
 
 const users = ref(MOCK_USERS);
-const searchTerm = ref('');
-const filterRole = ref<string>('all');
+const searchTerm = ref("");
+const filterRole = ref("all");
 const dialogOpen = ref(false);
-const editingUser = ref<User | null>(null);
+const editingUser = ref(null);
 const deleteDialogOpen = ref(false);
-const userToDelete = ref<string | null>(null);
+const userToDelete = ref(null);
 
 const formData = ref({
-  email: '',
-  firstName: '',
-  lastName: '',
-  role: 'patient' as UserRole,
-  phone: '',
+  email: "",
+  firstName: "",
+  lastName: "",
+  role: "patient",
+  phone: "",
 });
 
 const filteredUsers = computed(() => {
-  return users.value.filter(user => {
+  return users.value.filter((user) => {
     const matchesSearch =
       user.firstName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
       user.lastName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.value.toLowerCase());
 
-    const matchesRole = filterRole.value === 'all' || user.role === filterRole.value;
+    const matchesRole =
+      filterRole.value === "all" || user.role === filterRole.value;
 
     return matchesSearch && matchesRole;
   });
 });
 
-const handleOpenDialog = (user?: User) => {
+const handleOpenDialog = (user) => {
   if (user) {
     editingUser.value = user;
     formData.value = {
@@ -325,36 +315,38 @@ const handleOpenDialog = (user?: User) => {
       firstName: user.firstName,
       lastName: user.lastName,
       role: user.role,
-      phone: user.phone || '',
+      phone: user.phone || "",
     };
   } else {
     editingUser.value = null;
     formData.value = {
-      email: '',
-      firstName: '',
-      lastName: '',
-      role: 'patient',
-      phone: '',
+      email: "",
+      firstName: "",
+      lastName: "",
+      role: "patient",
+      phone: "",
     };
   }
   dialogOpen.value = true;
 };
 
 const handleSaveUser = () => {
-  if (!formData.value.email || !formData.value.firstName || !formData.value.lastName) {
+  if (
+    !formData.value.email ||
+    !formData.value.firstName ||
+    !formData.value.lastName
+  ) {
     // toast.error('Please fill all required fields');
     return;
   }
 
   if (editingUser.value) {
-    users.value = users.value.map(u =>
-      u.id === editingUser.value!.id
-        ? { ...u, ...formData.value }
-        : u
+    users.value = users.value.map((u) =>
+      u.id === editingUser.value.id ? { ...u, ...formData.value } : u,
     );
     // toast.success('User updated successfully');
   } else {
-    const newUser: User = {
+    const newUser = {
       id: Math.random().toString(36).substr(2, 9),
       ...formData.value,
     };
@@ -368,7 +360,7 @@ const handleSaveUser = () => {
 
 const handleDeleteUser = () => {
   if (userToDelete.value) {
-    users.value = users.value.filter(u => u.id !== userToDelete.value);
+    users.value = users.value.filter((u) => u.id !== userToDelete.value);
     // toast.success('User deleted successfully');
     deleteDialogOpen.value = false;
     userToDelete.value = null;
@@ -376,38 +368,38 @@ const handleDeleteUser = () => {
 };
 
 const handleExportCSV = () => {
-  const headers = ['ID', 'First Name', 'Last Name', 'Email', 'Role', 'Phone'];
-  const rows = filteredUsers.value.map(u => [
+  const headers = ["ID", "First Name", "Last Name", "Email", "Role", "Phone"];
+  const rows = filteredUsers.value.map((u) => [
     u.id,
     u.firstName,
     u.lastName,
     u.email,
     u.role,
-    u.phone || '',
+    u.phone || "",
   ]);
 
   const csvContent = [
-    headers.join(','),
-    ...rows.map(row => row.join(',')),
-  ].join('\n');
+    headers.join(","),
+    ...rows.map((row) => row.join(",")),
+  ].join("\n");
 
-  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const blob = new Blob([csvContent], { type: "text/csv" });
   const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  const a = document.createElement("a");
   a.href = url;
-  a.download = `users_export_${new Date().toISOString().split('T')[0]}.csv`;
+  a.download = `users_export_${new Date().toISOString().split("T")[0]}.csv`;
   a.click();
   window.URL.revokeObjectURL(url);
 
   // toast.success('CSV exported successfully');
 };
 
-const getRoleBadgeColor = (role: UserRole) => {
+const getRoleBadgeColor = (role) => {
   const colors = {
-    admin: 'bg-purple-100 text-purple-700',
-    doctor: 'bg-blue-100 text-blue-700',
-    receptionist: 'bg-teal-100 text-teal-700',
-    patient: 'bg-gray-100 text-gray-700',
+    admin: "bg-purple-100 text-purple-700",
+    doctor: "bg-blue-100 text-blue-700",
+    receptionist: "bg-teal-100 text-teal-700",
+    patient: "bg-gray-100 text-gray-700",
   };
   return colors[role];
 };
@@ -415,10 +407,10 @@ const getRoleBadgeColor = (role: UserRole) => {
 const roleStats = computed(() => {
   return {
     total: users.value.length,
-    admin: users.value.filter(u => u.role === 'admin').length,
-    doctor: users.value.filter(u => u.role === 'doctor').length,
-    receptionist: users.value.filter(u => u.role === 'receptionist').length,
-    patient: users.value.filter(u => u.role === 'patient').length,
+    admin: users.value.filter((u) => u.role === "admin").length,
+    doctor: users.value.filter((u) => u.role === "doctor").length,
+    receptionist: users.value.filter((u) => u.role === "receptionist").length,
+    patient: users.value.filter((u) => u.role === "patient").length,
   };
 });
 </script>

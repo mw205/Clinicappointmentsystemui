@@ -179,122 +179,124 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+<script setup>
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 // import { toast } from 'vue-sonner';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Clock, Users, CheckCircle, XCircle, UserCheck } from 'lucide-vue-next';
-import type { Appointment } from '@/types';
 
 const router = useRouter();
 
-const MOCK_TODAY_QUEUE: Appointment[] = [
+const MOCK_TODAY_QUEUE = [
   {
-    id: '1',
-    patientId: '1',
-    patientName: 'John Doe',
-    doctorId: '2',
-    doctorName: 'Dr. Sarah Smith',
-    date: '2026-04-19',
-    startTime: '09:00',
-    endTime: '09:30',
+    id: "1",
+    patientId: "1",
+    patientName: "John Doe",
+    doctorId: "2",
+    doctorName: "Dr. Sarah Smith",
+    date: "2026-04-19",
+    startTime: "09:00",
+    endTime: "09:30",
     duration: 30,
-    status: 'checked-in',
-    type: 'consultation',
-    checkInTime: '08:55',
+    status: "checked-in",
+    type: "consultation",
+    checkInTime: "08:55",
   },
   {
-    id: '2',
-    patientId: '3',
-    patientName: 'Jane Smith',
-    doctorId: '2',
-    doctorName: 'Dr. Sarah Smith',
-    date: '2026-04-19',
-    startTime: '09:30',
-    endTime: '10:00',
+    id: "2",
+    patientId: "3",
+    patientName: "Jane Smith",
+    doctorId: "2",
+    doctorName: "Dr. Sarah Smith",
+    date: "2026-04-19",
+    startTime: "09:30",
+    endTime: "10:00",
     duration: 30,
-    status: 'confirmed',
-    type: 'follow-up',
+    status: "confirmed",
+    type: "follow-up",
   },
   {
-    id: '3',
-    patientId: '4',
-    patientName: 'Robert Johnson',
-    doctorId: '2',
-    doctorName: 'Dr. Sarah Smith',
-    date: '2026-04-19',
-    startTime: '10:00',
-    endTime: '10:15',
+    id: "3",
+    patientId: "4",
+    patientName: "Robert Johnson",
+    doctorId: "2",
+    doctorName: "Dr. Sarah Smith",
+    date: "2026-04-19",
+    startTime: "10:00",
+    endTime: "10:15",
     duration: 15,
-    status: 'confirmed',
-    type: 'consultation',
+    status: "confirmed",
+    type: "consultation",
   },
   {
-    id: '4',
-    patientId: '5',
-    patientName: 'Maria Garcia',
-    doctorId: '2',
-    doctorName: 'Dr. Sarah Smith',
-    date: '2026-04-19',
-    startTime: '10:15',
-    endTime: '10:45',
+    id: "4",
+    patientId: "5",
+    patientName: "Maria Garcia",
+    doctorId: "2",
+    doctorName: "Dr. Sarah Smith",
+    date: "2026-04-19",
+    startTime: "10:15",
+    endTime: "10:45",
     duration: 30,
-    status: 'pending',
-    type: 'consultation',
+    status: "pending",
+    type: "consultation",
   },
 ];
 
 const queue = ref(MOCK_TODAY_QUEUE);
 
-const handleCheckIn = (id: string) => {
-  queue.value = queue.value.map(apt =>
-    apt.id === id ? { ...apt, status: 'checked-in' as const, checkInTime: new Date().toLocaleTimeString() } : apt
+const handleCheckIn = (id) => {
+  queue.value = queue.value.map((apt) =>
+    apt.id === id
+      ? {
+          ...apt,
+          status: "checked-in",
+          checkInTime: new Date().toLocaleTimeString(),
+        }
+      : apt,
   );
   // toast.success('Patient checked in');
 };
 
-const handleComplete = (id: string) => {
-  handleNavigate('emr-form');
+const handleComplete = (id) => {
+  handleNavigate("emr-form");
 };
 
-const handleNoShow = (id: string) => {
-  queue.value = queue.value.map(apt =>
-    apt.id === id ? { ...apt, status: 'no-show' as const } : apt
+const handleNoShow = (id) => {
+  queue.value = queue.value.map((apt) =>
+    apt.id === id ? { ...apt, status: "no-show" } : apt,
   );
   // toast.info('Marked as no-show');
 };
 
-const handleConfirm = (id: string) => {
-  queue.value = queue.value.map(apt =>
-    apt.id === id ? { ...apt, status: 'confirmed' as const } : apt
+const handleConfirm = (id) => {
+  queue.value = queue.value.map((apt) =>
+    apt.id === id ? { ...apt, status: "confirmed" } : apt,
   );
   // toast.success('Appointment confirmed');
 };
 
-const handleDecline = (id: string) => {
-  queue.value = queue.value.map(apt =>
-    apt.id === id ? { ...apt, status: 'cancelled' as const, cancelReason: 'Declined by doctor' } : apt
+const handleDecline = (id) => {
+  queue.value = queue.value.map((apt) =>
+    apt.id === id
+      ? { ...apt, status: "cancelled", cancelReason: "Declined by doctor" }
+      : apt,
   );
   // toast.error('Appointment declined');
 };
 
-const getStatusColor = (status: string) => {
+const getStatusColor = (status) => {
   const colors = {
-    'checked-in': 'bg-green-100 text-green-700',
-    'confirmed': 'bg-blue-100 text-blue-700',
-    'pending': 'bg-yellow-100 text-yellow-700',
-    'completed': 'bg-gray-100 text-gray-700',
-    'cancelled': 'bg-red-100 text-red-700',
-    'no-show': 'bg-orange-100 text-orange-700',
-  } as Record<string, string>;
+    "checked-in": "bg-green-100 text-green-700",
+    confirmed: "bg-blue-100 text-blue-700",
+    pending: "bg-yellow-100 text-yellow-700",
+    completed: "bg-gray-100 text-gray-700",
+    cancelled: "bg-red-100 text-red-700",
+    "no-show": "bg-orange-100 text-orange-700",
+  };
   return colors[status] || colors.pending;
 };
 
-const calculateWaitTime = (checkInTime?: string) => {
+const calculateWaitTime = (checkInTime) => {
   if (!checkInTime) return null;
   const now = new Date();
   const checkedIn = new Date(`2026-04-19 ${checkInTime}`);
@@ -305,12 +307,12 @@ const calculateWaitTime = (checkInTime?: string) => {
 
 const stats = computed(() => ({
   total: queue.value.length,
-  confirmed: queue.value.filter(a => a.status === 'confirmed').length,
-  checkedIn: queue.value.filter(a => a.status === 'checked-in').length,
-  completed: queue.value.filter(a => a.status === 'completed').length,
+  confirmed: queue.value.filter((a) => a.status === "confirmed").length,
+  checkedIn: queue.value.filter((a) => a.status === "checked-in").length,
+  completed: queue.value.filter((a) => a.status === "completed").length,
 }));
 
-const handleNavigate = (path: string) => {
+const handleNavigate = (path) => {
   router.push(`/doctor/${path}`);
 };
 </script>

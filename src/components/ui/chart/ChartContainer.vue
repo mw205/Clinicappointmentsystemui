@@ -1,36 +1,22 @@
-<script lang="ts">
-import type { HTMLAttributes } from "vue"
-import type { ChartConfig } from "."
-import { useId } from "reka-ui"
-import { computed, toRefs } from "vue"
-import { cn } from "@/lib/utils"
-import { provideChartContext } from "."
-import ChartStyle from "./ChartStyle.vue"
+<script>
+export {};
 </script>
 
-<script setup lang="ts">
-const props = defineProps<{
-  id?: HTMLAttributes["id"]
-  class?: HTMLAttributes["class"]
-  config: ChartConfig
-  cursor?: boolean
-}>()
+<script setup>
+const props = defineProps();
 
-defineSlots<{
-  default: {
-    id: string
-    config: ChartConfig
-  }
-}>()
+defineSlots();
 
-const { config } = toRefs(props)
-const uniqueId = useId()
-const chartId = computed(() => `chart-${props.id || uniqueId.replace(/:/g, "")}`)
+const { config } = toRefs(props);
+const uniqueId = useId();
+const chartId = computed(
+  () => `chart-${props.id || uniqueId.replace(/:/g, "")}`,
+);
 
 provideChartContext({
   id: uniqueId,
   config,
-})
+});
 </script>
 
 <template>

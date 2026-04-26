@@ -1,16 +1,10 @@
-<script setup lang="ts">
-import type { MenubarSubEmits } from "reka-ui"
-import { MenubarSub, useForwardPropsEmits } from "reka-ui"
+<script setup>
+import { useForwardPropsEmits } from "reka-ui";
 
-interface MenubarSubRootProps {
-  defaultOpen?: boolean
-  open?: boolean
-}
+const props = defineProps();
+const emits = defineEmits();
 
-const props = defineProps<MenubarSubRootProps>()
-const emits = defineEmits<MenubarSubEmits>()
-
-const forwarded = useForwardPropsEmits(props, emits)
+const forwarded = useForwardPropsEmits(props, emits);
 </script>
 
 <template>

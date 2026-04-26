@@ -261,73 +261,57 @@
   </form>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { ArrowLeft, Plus, Trash2, Save } from 'lucide-vue-next';
+<script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 // import { toast } from 'vue-sonner';
-
-interface Prescription {
-  drugName: string;
-  dosage: string;
-  frequency: string;
-  duration: string;
-  instructions: string;
-}
-
-interface TestOrder {
-  testName: string;
-  reason: string;
-  urgent: boolean;
-}
 
 const router = useRouter();
 
 const formData = ref({
-  patientName: 'John Doe',
-  appointmentTime: '09:00 AM',
-  chiefComplaint: '',
-  diagnosis: '',
-  notes: '',
+  patientName: "John Doe",
+  appointmentTime: "09:00 AM",
+  chiefComplaint: "",
+  diagnosis: "",
+  notes: "",
   vitals: {
-    temperature: '',
-    bloodPressure: '',
-    heartRate: '',
-    weight: '',
-    height: '',
+    temperature: "",
+    bloodPressure: "",
+    heartRate: "",
+    weight: "",
+    height: "",
   },
 });
 
-const prescriptions = ref<Prescription[]>([
-  { drugName: '', dosage: '', frequency: '', duration: '', instructions: '' },
+const prescriptions = ref([
+  { drugName: "", dosage: "", frequency: "", duration: "", instructions: "" },
 ]);
 
-const tests = ref<TestOrder[]>([]);
+const tests = ref([]);
 
 const addPrescription = () => {
-  prescriptions.value.push({ drugName: '', dosage: '', frequency: '', duration: '', instructions: '' });
+  prescriptions.value.push({
+    drugName: "",
+    dosage: "",
+    frequency: "",
+    duration: "",
+    instructions: "",
+  });
 };
 
-const removePrescription = (index: number) => {
+const removePrescription = (index) => {
   prescriptions.value.splice(index, 1);
 };
 
 const addTest = () => {
-  tests.value.push({ testName: '', reason: '', urgent: false });
+  tests.value.push({ testName: "", reason: "", urgent: false });
 };
 
-const removeTest = (index: number) => {
+const removeTest = (index) => {
   tests.value.splice(index, 1);
 };
 
-const handleNavigate = (path: string) => {
+const handleNavigate = (path) => {
   router.push(`/doctor/${path}`);
 };
 
@@ -339,7 +323,7 @@ const handleSubmit = () => {
 
   // toast.success('Medical record saved successfully');
   setTimeout(() => {
-    handleNavigate('dashboard');
+    handleNavigate("dashboard");
   }, 1500);
 };
 </script>

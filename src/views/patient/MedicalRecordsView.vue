@@ -18,7 +18,9 @@
                 <CardDescription class="flex items-center gap-4 mt-1">
                   <span class="flex items-center gap-1">
                     <Calendar class="w-4 h-4" />
-                    {{ new Date(record.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }}
+                    {{ new Date(record.date).toLocaleDateString('en-US', {
+                      month: 'long', day: 'numeric', year:
+                    'numeric' }) }}
                   </span>
                   <span class="flex items-center gap-1">
                     <User class="w-4 h-4" />
@@ -109,7 +111,8 @@
                 <h4 class="text-sm font-medium text-gray-900">Tests Ordered</h4>
               </div>
               <div class="space-y-2">
-                <div v-for="test in record.tests" :key="test.id" class="p-3 border border-gray-200 rounded-lg flex items-center justify-between">
+                <div v-for="test in record.tests" :key="test.id"
+                  class="p-3 border border-gray-200 rounded-lg flex items-center justify-between">
                   <div>
                     <p class="font-medium text-gray-900">{{ test.testName }}</p>
                     <p v-if="test.reason" class="text-sm text-gray-600 mt-1">{{ test.reason }}</p>
@@ -132,75 +135,72 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { FileText, Calendar, User, Pill, FlaskConical } from 'lucide-vue-next';
-import type { MedicalRecord } from '@/types';
-
-const MOCK_RECORDS: MedicalRecord[] = [
+<script setup>
+const MOCK_RECORDS = [
   {
-    id: '1',
-    appointmentId: 'apt1',
-    patientId: '1',
-    doctorId: '2',
-    date: '2026-03-15',
-    chiefComplaint: 'Persistent headache and fatigue',
-    diagnosis: 'Tension headache, mild dehydration',
-    notes: 'Patient reports stress-related headaches occurring 3-4 times per week. Blood pressure normal. Recommended increased water intake and stress management techniques.',
+    id: "1",
+    appointmentId: "apt1",
+    patientId: "1",
+    doctorId: "2",
+    date: "2026-03-15",
+    chiefComplaint: "Persistent headache and fatigue",
+    diagnosis: "Tension headache, mild dehydration",
+    notes:
+      "Patient reports stress-related headaches occurring 3-4 times per week. Blood pressure normal. Recommended increased water intake and stress management techniques.",
     prescriptions: [
       {
-        id: 'rx1',
-        drugName: 'Ibuprofen',
-        dosage: '400mg',
-        frequency: 'Every 6 hours',
-        duration: '5 days',
-        instructions: 'Take with food',
+        id: "rx1",
+        drugName: "Ibuprofen",
+        dosage: "400mg",
+        frequency: "Every 6 hours",
+        duration: "5 days",
+        instructions: "Take with food",
       },
       {
-        id: 'rx2',
-        drugName: 'Multivitamin',
-        dosage: '1 tablet',
-        frequency: 'Once daily',
-        duration: '30 days',
-        instructions: 'Take in the morning',
+        id: "rx2",
+        drugName: "Multivitamin",
+        dosage: "1 tablet",
+        frequency: "Once daily",
+        duration: "30 days",
+        instructions: "Take in the morning",
       },
     ],
     tests: [
       {
-        id: 'test1',
-        testName: 'Complete Blood Count (CBC)',
-        reason: 'Rule out anemia',
+        id: "test1",
+        testName: "Complete Blood Count (CBC)",
+        reason: "Rule out anemia",
         urgent: false,
       },
     ],
     vitals: {
       temperature: 98.6,
-      bloodPressure: '120/80',
+      bloodPressure: "120/80",
       heartRate: 72,
       weight: 70,
       height: 175,
     },
   },
   {
-    id: '2',
-    appointmentId: 'apt2',
-    patientId: '1',
-    doctorId: '2',
-    date: '2026-02-10',
-    chiefComplaint: 'Annual check-up',
-    diagnosis: 'Healthy, no concerns',
-    notes: 'Annual wellness visit. All vitals within normal range. Patient maintaining healthy lifestyle.',
+    id: "2",
+    appointmentId: "apt2",
+    patientId: "1",
+    doctorId: "2",
+    date: "2026-02-10",
+    chiefComplaint: "Annual check-up",
+    diagnosis: "Healthy, no concerns",
+    notes:
+      "Annual wellness visit. All vitals within normal range. Patient maintaining healthy lifestyle.",
     prescriptions: [],
     tests: [],
     vitals: {
       temperature: 98.4,
-      bloodPressure: '118/78',
+      bloodPressure: "118/78",
       heartRate: 68,
       weight: 69,
       height: 175,
     },
   },
 ];
+
 </script>

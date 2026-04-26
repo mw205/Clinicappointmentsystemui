@@ -183,106 +183,138 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Clock, User } from 'lucide-vue-next';
-import type { Doctor, TimeSlot, WeeklySchedule, DoctorSchedule } from '@/types';
+<script setup>
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import {
   DateFormatter,
-  type DateValue,
   getLocalTimeZone,
   today,
-  getDayOfWeek
-} from '@internationalized/date';
+  getDayOfWeek,
+} from "@internationalized/date";
 
 const router = useRouter();
 
-const MOCK_DOCTORS: Doctor[] = [
+const MOCK_DOCTORS = [
   {
-    id: '2',
-    email: 'doctor@clinic.com',
-    firstName: 'Dr. Sarah',
-    lastName: 'Smith',
-    role: 'doctor',
-    specialization: 'General Medicine',
-    licenseNumber: 'MD12345',
+    id: "2",
+    email: "doctor@clinic.com",
+    firstName: "Dr. Sarah",
+    lastName: "Smith",
+    role: "doctor",
+    specialization: "General Medicine",
+    licenseNumber: "MD12345",
     consultationFee: 100,
   },
   {
-    id: '5',
-    email: 'doctor2@clinic.com',
-    firstName: 'Dr. Michael',
-    lastName: 'Chen',
-    role: 'doctor',
-    specialization: 'Cardiology',
-    licenseNumber: 'MD12346',
+    id: "5",
+    email: "doctor2@clinic.com",
+    firstName: "Dr. Michael",
+    lastName: "Chen",
+    role: "doctor",
+    specialization: "Cardiology",
+    licenseNumber: "MD12346",
     consultationFee: 150,
   },
 ];
 
 // Mock data (sync with DoctorSchedulesView.vue)
-const weeklySchedules = ref<WeeklySchedule[]>([
-  { id: 'w1', doctorId: '2', dayOfWeek: 1, startTime: '09:00', endTime: '17:00', slotDuration: 30, isActive: true },
-  { id: 'w2', doctorId: '2', dayOfWeek: 3, startTime: '09:00', endTime: '17:00', slotDuration: 30, isActive: true },
-  { id: 'w3', doctorId: '5', dayOfWeek: 2, startTime: '10:00', endTime: '18:00', slotDuration: 30, isActive: true },
-]);
-
-const exceptions = ref<DoctorSchedule[]>([
+const weeklySchedules = ref([
   {
-    id: 'e1',
-    doctorId: '2',
-    doctorName: 'Dr. Sarah Smith',
-    date: '2026-04-22',
-    startTime: '09:00',
-    endTime: '13:00',
+    id: "w1",
+    doctorId: "2",
+    dayOfWeek: 1,
+    startTime: "09:00",
+    endTime: "17:00",
     slotDuration: 30,
-    isAvailable: false,
-    reason: 'Medical Conference',
+    isActive: true,
+  },
+  {
+    id: "w2",
+    doctorId: "2",
+    dayOfWeek: 3,
+    startTime: "09:00",
+    endTime: "17:00",
+    slotDuration: 30,
+    isActive: true,
+  },
+  {
+    id: "w3",
+    doctorId: "5",
+    dayOfWeek: 2,
+    startTime: "10:00",
+    endTime: "18:00",
+    slotDuration: 30,
+    isActive: true,
   },
 ]);
 
-const getDoctorAvailabilityForDate = (doctorId: string, date: DateValue) => {
-  const dayOfWeek = getDayOfWeek(date, 'en-US');
+const exceptions = ref([
+  {
+    id: "e1",
+    doctorId: "2",
+    doctorName: "Dr. Sarah Smith",
+    date: "2026-04-22",
+    startTime: "09:00",
+    endTime: "13:00",
+    slotDuration: 30,
+    isAvailable: false,
+    reason: "Medical Conference",
+  },
+]);
+
+const getDoctorAvailabilityForDate = (doctorId, date) => {
+  const dayOfWeek = getDayOfWeek(date, "en-US");
   const dateStr = date.toString();
 
   // 1. Check Exceptions first (they override)
-  const exception = exceptions.value.find(e => e.doctorId === doctorId && e.date === dateStr);
+  const exception = exceptions.value.find(
+    (e) => e.doctorId === doctorId && e.date === dateStr,
+  );
   if (exception) {
-    return exception.isAvailable 
-      ? { startTime: exception.startTime, endTime: exception.endTime, isAvailable: true }
+    return exception.isAvailable
+      ? {
+          startTime: exception.startTime,
+          endTime: exception.endTime,
+          isAvailable: true,
+        }
       : { isAvailable: false };
   }
 
   // 2. Check Weekly Pattern
-  const weekly = weeklySchedules.value.find(w => w.doctorId === doctorId && w.dayOfWeek === dayOfWeek && w.isActive);
+  const weekly = weeklySchedules.value.find(
+    (w) => w.doctorId === doctorId && w.dayOfWeek === dayOfWeek && w.isActive,
+  );
   if (weekly) {
-    return { startTime: weekly.startTime, endTime: weekly.endTime, isAvailable: true };
+    return {
+      startTime: weekly.startTime,
+      endTime: weekly.endTime,
+      isAvailable: true,
+    };
   }
 
   return { isAvailable: false };
 };
 
-const generateTimeSlots = (doctorId: string, date: DateValue, duration: number): TimeSlot[] => {
+const generateTimeSlots = (doctorId, date, duration) => {
   const availability = getDoctorAvailabilityForDate(doctorId, date);
-  if (!availability.isAvailable || !availability.startTime || !availability.endTime) {
+  if (
+    !availability.isAvailable ||
+    !availability.startTime ||
+    !availability.endTime
+  ) {
     return [];
   }
 
-  const slots: TimeSlot[] = [];
-  const [startH, startM] = availability.startTime.split(':').map(Number);
-  const [endH, endM] = availability.endTime.split(':').map(Number);
+  const slots = [];
+  const [startH, startM] = availability.startTime.split(":").map(Number);
+  const [endH, endM] = availability.endTime.split(":").map(Number);
 
   let currentHour = startH;
   let currentMin = startM;
 
   while (currentHour < endH || (currentHour === endH && currentMin < endM)) {
-    const time = `${currentHour.toString().padStart(2, '0')}:${currentMin.toString().padStart(2, '0')}`;
-    
+    const time = `${currentHour.toString().padStart(2, "0")}:${currentMin.toString().padStart(2, "0")}`;
     // Check if slot fits before end time
     const nextMin = currentMin + duration;
     const nextHour = currentHour + Math.floor(nextMin / 60);
@@ -305,57 +337,63 @@ const generateTimeSlots = (doctorId: string, date: DateValue, duration: number):
 };
 
 const step = ref(1);
-const selectedDoctor = ref<Doctor | null>(null);
-const selectedDate = ref<DateValue | undefined>();
-const selectedSlot = ref<string | null>(null);
-const slotDuration = ref<number>(30);
+const selectedDoctor = ref(null);
+const selectedDate = ref();
+const selectedSlot = ref(null);
+const slotDuration = ref(30);
 
 const timeSlots = computed(() => {
   if (!selectedDoctor.value || !selectedDate.value) return [];
-  return generateTimeSlots(selectedDoctor.value.id, selectedDate.value, slotDuration.value);
+  return generateTimeSlots(
+    selectedDoctor.value.id,
+    selectedDate.value,
+    slotDuration.value,
+  );
 });
 
-const df = new DateFormatter('en-US', {
-  year: 'numeric',
-  month: 'numeric',
-  day: 'numeric'
+const df = new DateFormatter("en-US", {
+  year: "numeric",
+  month: "numeric",
+  day: "numeric",
 });
 
 const formattedSelectedDate = computed(() => {
-  if (!selectedDate.value) return '';
+  if (!selectedDate.value) return "";
   return df.format(selectedDate.value.toDate(getLocalTimeZone()));
 });
 
-const isDateDisabled = (date: DateValue) => {
+const isDateDisabled = (date) => {
   if (date.compare(today(getLocalTimeZone())) < 0) {
     return true;
   }
-  
   if (!selectedDoctor.value) return false;
 
   // Check if doctor has any availability (weekly or exception) on this day
-  const availability = getDoctorAvailabilityForDate(selectedDoctor.value.id, date);
+  const availability = getDoctorAvailabilityForDate(
+    selectedDoctor.value.id,
+    date,
+  );
   return !availability.isAvailable;
 };
 
-const selectDoctor = (doctor: Doctor) => {
+const selectDoctor = (doctor) => {
   selectedDoctor.value = doctor;
   step.value = 2;
 };
 
-const selectDuration = (duration: number) => {
+const selectDuration = (duration) => {
   slotDuration.value = duration;
   step.value = 3;
 };
 
-const onDateSelect = (val: DateValue | undefined) => {
+const onDateSelect = (val) => {
   selectedDate.value = val;
   if (val) {
     step.value = 4;
   }
 };
 
-const handleNavigate = (path: string) => {
+const handleNavigate = (path) => {
   router.push(`/patient/${path}`);
 };
 
@@ -363,7 +401,7 @@ const handleBack = () => {
   if (step.value > 1) {
     step.value--;
   } else {
-    handleNavigate('dashboard');
+    handleNavigate("dashboard");
   }
 };
 
@@ -373,7 +411,7 @@ const handleBooking = () => {
   }
 
   setTimeout(() => {
-    handleNavigate('dashboard');
+    handleNavigate("dashboard");
   }, 1500);
 };
 </script>

@@ -137,60 +137,55 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { Calendar, Clock, FileText, Plus } from 'lucide-vue-next';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import type { Appointment } from '@/types';
+<script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const MOCK_UPCOMING: Appointment[] = [
+const MOCK_UPCOMING = [
   {
-    id: '1',
-    patientId: '1',
-    patientName: 'John Doe',
-    doctorId: '2',
-    doctorName: 'Dr. Sarah Smith',
-    date: '2026-04-22',
-    startTime: '10:00',
-    endTime: '10:30',
+    id: "1",
+    patientId: "1",
+    patientName: "John Doe",
+    doctorId: "2",
+    doctorName: "Dr. Sarah Smith",
+    date: "2026-04-22",
+    startTime: "10:00",
+    endTime: "10:30",
     duration: 30,
-    status: 'confirmed',
-    type: 'consultation',
+    status: "confirmed",
+    type: "consultation",
   },
   {
-    id: '2',
-    patientId: '1',
-    patientName: 'John Doe',
-    doctorId: '2',
-    doctorName: 'Dr. Sarah Smith',
-    date: '2026-04-25',
-    startTime: '14:00',
-    endTime: '14:30',
+    id: "2",
+    patientId: "1",
+    patientName: "John Doe",
+    doctorId: "2",
+    doctorName: "Dr. Sarah Smith",
+    date: "2026-04-25",
+    startTime: "14:00",
+    endTime: "14:30",
     duration: 30,
-    status: 'pending',
-    type: 'follow-up',
+    status: "pending",
+    type: "follow-up",
   },
 ];
 
 const appointments = ref(MOCK_UPCOMING);
 
-const handleNavigate = (path: string) => {
+const handleNavigate = (path) => {
   router.push(`/patient/${path}`);
 };
 
-const getStatusColor = (status: string) => {
+const getStatusColor = (status) => {
   const colors = {
-    confirmed: 'bg-green-100 text-green-700',
-    pending: 'bg-yellow-100 text-yellow-700',
-    'checked-in': 'bg-blue-100 text-blue-700',
-    completed: 'bg-gray-100 text-gray-700',
-    cancelled: 'bg-red-100 text-red-700',
-  } as Record<string, string>;
+    confirmed: "bg-green-100 text-green-700",
+    pending: "bg-yellow-100 text-yellow-700",
+    "checked-in": "bg-blue-100 text-blue-700",
+    completed: "bg-gray-100 text-gray-700",
+    cancelled: "bg-red-100 text-red-700",
+  };
   return colors[status] || colors.pending;
 };
 </script>

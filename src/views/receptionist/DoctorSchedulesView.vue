@@ -18,7 +18,7 @@
               <DialogTitle>Weekly Availability Patterns</DialogTitle>
               <DialogDescription>Set recurring working hours for doctors</DialogDescription>
             </DialogHeader>
-            
+
             <div class="space-y-6 py-4">
               <div class="flex items-center gap-4 p-4 bg-blue-50 rounded-lg">
                 <div class="flex-1 space-y-2">
@@ -37,13 +37,9 @@
               </div>
 
               <div v-if="selectedWeeklyDoctorId" class="grid gap-4">
-                <div 
-                  v-for="day in DAYS" 
-                  :key="day.value"
-                  class="flex items-center gap-4 p-3 border rounded-lg"
-                >
+                <div v-for="day in DAYS" :key="day.value" class="flex items-center gap-4 p-3 border rounded-lg">
                   <div class="w-32 font-medium">{{ day.label }}</div>
-                  
+
                   <template v-if="getWeeklyForDay(day.value)">
                     <div class="flex-1 grid grid-cols-3 gap-3">
                       <Input type="time" v-model="getWeeklyForDay(day.value)!.startTime" size="sm" />
@@ -58,16 +54,11 @@
                         </SelectContent>
                       </Select>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      @click="removeWeeklyDay(day.value)"
-                      class="text-red-500"
-                    >
+                    <Button variant="ghost" size="icon" @click="removeWeeklyDay(day.value)" class="text-red-500">
                       <Trash2 class="w-4 h-4" />
                     </Button>
                   </template>
-                  
+
                   <Button v-else variant="outline" size="sm" @click="addWeeklyDay(day.value)">
                     <Plus class="w-3 h-3 mr-1" /> Add Hours
                   </Button>
@@ -77,7 +68,7 @@
                 Select a doctor to manage their recurring weekly schedule
               </div>
             </div>
-            
+
             <DialogFooter>
               <Button @click="weeklyDialogOpen = false">Save Patterns</Button>
             </DialogFooter>
@@ -137,11 +128,7 @@
 
               <div class="space-y-2">
                 <Label>Reason</Label>
-                <Textarea
-                  placeholder="e.g., Vacation, Medical Leave"
-                  v-model="newException.reason"
-                  :rows="2"
-                />
+                <Textarea placeholder="e.g., Vacation, Medical Leave" v-model="newException.reason" :rows="2" />
               </div>
             </div>
             <DialogFooter>
@@ -166,12 +153,7 @@
             <CardTitle>Select Date</CardTitle>
           </CardHeader>
           <CardContent class="flex justify-center">
-            <Calendar
-              id="schedule-calendar"
-              mode="single"
-              v-model="selectedDate"
-              class="rounded-md border"
-            />
+            <Calendar id="schedule-calendar" mode="single" v-model="selectedDate" class="rounded-md border" />
           </CardContent>
         </Card>
 
@@ -191,16 +173,12 @@
               <p class="text-gray-500">No doctors scheduled for this date</p>
             </div>
             <div v-else class="space-y-3">
-              <div
-                v-for="schedule in combinedDaySchedules"
-                :key="schedule.id"
-                :class="[
-                  'p-4 rounded-lg border-2',
-                  schedule.isAvailable
-                    ? 'border-green-200 bg-green-50/50'
-                    : 'border-red-200 bg-red-50/50'
-                ]"
-              >
+              <div v-for="schedule in combinedDaySchedules" :key="schedule.id" :class="[
+                'p-4 rounded-lg border-2',
+                schedule.isAvailable
+                  ? 'border-green-200 bg-green-50/50'
+                  : 'border-red-200 bg-red-50/50'
+              ]">
                 <div class="flex items-start justify-between gap-4">
                   <div class="flex items-start gap-3 flex-1">
                     <div :class="['p-2 rounded-lg', schedule.isAvailable ? 'bg-green-100' : 'bg-red-100']">
@@ -229,13 +207,8 @@
                     <Badge :class="schedule.isAvailable ? 'bg-green-600' : 'bg-red-600'">
                       {{ schedule.isAvailable ? 'Available' : 'Blocked' }}
                     </Badge>
-                    <Button 
-                      v-if="schedule.isException" 
-                      variant="ghost" 
-                      size="icon" 
-                      class="h-8 w-8 text-gray-400 hover:text-red-500"
-                      @click="removeException(schedule.id)"
-                    >
+                    <Button v-if="schedule.isException" variant="ghost" size="icon"
+                      class="h-8 w-8 text-gray-400 hover:text-red-500" @click="removeException(schedule.id)">
                       <Trash2 class="w-4 h-4" />
                     </Button>
                   </div>
@@ -265,30 +238,25 @@
                       {{ doctor.firstName }} {{ doctor.lastName }}
                     </p>
                     <p class="text-sm text-gray-600">{{ doctor.specialization }}</p>
-                    
+
                     <div class="mt-3">
                       <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Weekly Patterns</p>
                       <div class="flex flex-wrap gap-1 mt-1">
-                        <Badge 
-                          v-for="pattern in weeklySchedules.filter(s => s.doctorId === doctor.id)" 
-                          :key="pattern.id"
-                          variant="secondary"
-                          class="text-[10px]"
-                        >
+                        <Badge v-for="pattern in weeklySchedules.filter(s => s.doctorId === doctor.id)"
+                          :key="pattern.id" variant="secondary" class="text-[10px]">
                           {{ DAYS[pattern.dayOfWeek].label.substring(0, 3) }}: {{ pattern.startTime }}
                         </Badge>
-                        <span v-if="!weeklySchedules.some(s => s.doctorId === doctor.id)" class="text-xs text-gray-400">None set</span>
+                        <span v-if="!weeklySchedules.some(s => s.doctorId === doctor.id)"
+                          class="text-xs text-gray-400">None
+                          set</span>
                       </div>
                     </div>
 
                     <div class="mt-3">
                       <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Upcoming Exceptions</p>
                       <div class="space-y-1 mt-1">
-                        <div 
-                          v-for="exc in exceptions.filter(s => s.doctorId === doctor.id).slice(0, 2)" 
-                          :key="exc.id"
-                          class="text-xs flex items-center justify-between"
-                        >
+                        <div v-for="exc in exceptions.filter(s => s.doctorId === doctor.id).slice(0, 2)" :key="exc.id"
+                          class="text-xs flex items-center justify-between">
                           <span :class="exc.isAvailable ? 'text-green-600' : 'text-red-600'">
                             {{ exc.date }}: {{ exc.isAvailable ? 'Extra' : 'Off' }}
                           </span>
@@ -306,139 +274,158 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar as CalendarIcon, Clock, Plus, User, Trash2, CalendarDays } from 'lucide-vue-next';
-import type { DoctorSchedule, WeeklySchedule, Doctor } from '@/types';
+<script setup>
 import {
   DateFormatter,
-  type DateValue,
   getLocalTimeZone,
   today,
-} from '@internationalized/date';
+} from "@internationalized/date";
+import { computed, ref } from "vue";
 
-const MOCK_DOCTORS: Doctor[] = [
+const MOCK_DOCTORS = [
   {
-    id: '2',
-    email: 'doctor@clinic.com',
-    firstName: 'Dr. Sarah',
-    lastName: 'Smith',
-    role: 'doctor',
-    specialization: 'General Medicine',
-    licenseNumber: 'MD12345',
+    id: "2",
+    email: "doctor@clinic.com",
+    firstName: "Dr. Sarah",
+    lastName: "Smith",
+    role: "doctor",
+    specialization: "General Medicine",
+    licenseNumber: "MD12345",
     consultationFee: 100,
   },
   {
-    id: '5',
-    email: 'doctor2@clinic.com',
-    firstName: 'Dr. Michael',
-    lastName: 'Chen',
-    role: 'doctor',
-    specialization: 'Cardiology',
-    licenseNumber: 'MD12346',
+    id: "5",
+    email: "doctor2@clinic.com",
+    firstName: "Dr. Michael",
+    lastName: "Chen",
+    role: "doctor",
+    specialization: "Cardiology",
+    licenseNumber: "MD12346",
     consultationFee: 150,
   },
 ];
 
 const DAYS = [
-  { label: 'Sunday', value: 0 },
-  { label: 'Monday', value: 1 },
-  { label: 'Tuesday', value: 2 },
-  { label: 'Wednesday', value: 3 },
-  { label: 'Thursday', value: 4 },
-  { label: 'Friday', value: 5 },
-  { label: 'Saturday', value: 6 },
+  { label: "Sunday", value: 0 },
+  { label: "Monday", value: 1 },
+  { label: "Tuesday", value: 2 },
+  { label: "Wednesday", value: 3 },
+  { label: "Thursday", value: 4 },
+  { label: "Friday", value: 5 },
+  { label: "Saturday", value: 6 },
 ];
 
 // State
-const selectedDate = ref(today(getLocalTimeZone())) as any as import('vue').Ref<DateValue | undefined>;
+const selectedDate = ref(today(getLocalTimeZone()));
 const weeklyDialogOpen = ref(false);
 const exceptionDialogOpen = ref(false);
-const selectedWeeklyDoctorId = ref('');
+const selectedWeeklyDoctorId = ref("");
 
-const weeklySchedules = ref<WeeklySchedule[]>([
-  { id: 'w1', doctorId: '2', dayOfWeek: 1, startTime: '09:00', endTime: '17:00', slotDuration: 30, isActive: true },
-  { id: 'w2', doctorId: '2', dayOfWeek: 3, startTime: '09:00', endTime: '17:00', slotDuration: 30, isActive: true },
-  { id: 'w3', doctorId: '5', dayOfWeek: 2, startTime: '10:00', endTime: '18:00', slotDuration: 30, isActive: true },
+const weeklySchedules = ref([
+  {
+    id: "w1",
+    doctorId: "2",
+    dayOfWeek: 1,
+    startTime: "09:00",
+    endTime: "17:00",
+    slotDuration: 30,
+    isActive: true,
+  },
+  {
+    id: "w2",
+    doctorId: "2",
+    dayOfWeek: 3,
+    startTime: "09:00",
+    endTime: "17:00",
+    slotDuration: 30,
+    isActive: true,
+  },
+  {
+    id: "w3",
+    doctorId: "5",
+    dayOfWeek: 2,
+    startTime: "10:00",
+    endTime: "18:00",
+    slotDuration: 30,
+    isActive: true,
+  },
 ]);
 
-const exceptions = ref<DoctorSchedule[]>([
+const exceptions = ref([
   {
-    id: 'e1',
-    doctorId: '2',
-    doctorName: 'Dr. Sarah Smith',
-    date: '2026-04-22',
-    startTime: '09:00',
-    endTime: '13:00',
+    id: "e1",
+    doctorId: "2",
+    doctorName: "Dr. Sarah Smith",
+    date: "2026-04-22",
+    startTime: "09:00",
+    endTime: "13:00",
     slotDuration: 30,
     isAvailable: false,
-    reason: 'Medical Conference',
+    reason: "Medical Conference",
   },
 ]);
 
 const newException = ref({
-  doctorId: '',
-  startTime: '09:00',
-  endTime: '17:00',
-  isAvailable: 'false',
-  reason: '',
+  doctorId: "",
+  startTime: "09:00",
+  endTime: "17:00",
+  isAvailable: "false",
+  reason: "",
 });
 
 // Helpers
-const df = new DateFormatter('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+const df = new DateFormatter("en-US", {
+  weekday: "long",
+  month: "long",
+  day: "numeric",
+});
 
 const formattedSelectedDate = computed(() => {
-  if (!selectedDate.value) return '';
+  if (!selectedDate.value) return "";
   return df.format(selectedDate.value.toDate(getLocalTimeZone()));
 });
 
-const selectedDateStr = computed(() => selectedDate.value?.toString() || '');
+const selectedDateStr = computed(() => selectedDate.value?.toString() || "");
 
 const combinedDaySchedules = computed(() => {
   if (!selectedDate.value) return [];
-  
+
   const jsDate = selectedDate.value.toDate(getLocalTimeZone());
   const dayOfWeek = jsDate.getDay();
   const dateStr = selectedDateStr.value;
 
   // 1. Get weekly patterns for this day
   const dailyFromWeekly = weeklySchedules.value
-    .filter(ws => ws.dayOfWeek === dayOfWeek && ws.isActive)
-    .map(ws => {
-      const doctor = MOCK_DOCTORS.find(d => d.id === ws.doctorId);
+    .filter((ws) => ws.dayOfWeek === dayOfWeek && ws.isActive)
+    .map((ws) => {
+      const doctor = MOCK_DOCTORS.find((d) => d.id === ws.doctorId);
       return {
         id: `w-${ws.id}`,
         doctorId: ws.doctorId,
-        doctorName: doctor ? `${doctor.firstName} ${doctor.lastName}` : 'Unknown',
+        doctorName: doctor
+          ? `${doctor.firstName} ${doctor.lastName}`
+          : "Unknown",
         startTime: ws.startTime,
         endTime: ws.endTime,
         slotDuration: ws.slotDuration,
         isAvailable: true,
         isException: false,
-        reason: undefined as string | undefined
+        reason: undefined,
       };
     });
 
   // 2. Get exceptions for this day
-  const dailyExceptions = exceptions.value.filter(e => e.date === dateStr);
+  const dailyExceptions = exceptions.value.filter((e) => e.date === dateStr);
 
   // 3. Merge: Exceptions override weekly patterns for the same doctor
   const finalSchedules = [...dailyFromWeekly];
-  
-  dailyExceptions.forEach(exc => {
-    const existingIdx = finalSchedules.findIndex(s => s.doctorId === exc.doctorId);
+
+  dailyExceptions.forEach((exc) => {
+    const existingIdx = finalSchedules.findIndex(
+      (s) => s.doctorId === exc.doctorId,
+    );
     if (existingIdx !== -1) {
-      // If exception is "Available" (Extra Shift), we might keep both or override. 
+      // If exception is "Available" (Extra Shift), we might keep both or override.
       // For simplicity, exceptions override. If it's blocked, it removes availability.
       if (!exc.isAvailable) {
         finalSchedules[existingIdx] = { ...exc, isException: true };
@@ -455,30 +442,36 @@ const combinedDaySchedules = computed(() => {
 });
 
 // Weekly Methods
-const getWeeklyForDay = (dayValue: number) => {
-  return weeklySchedules.value.find(s => s.doctorId === selectedWeeklyDoctorId.value && s.dayOfWeek === dayValue);
+const getWeeklyForDay = (dayValue) => {
+  return weeklySchedules.value.find(
+    (s) =>
+      s.doctorId === selectedWeeklyDoctorId.value && s.dayOfWeek === dayValue,
+  );
 };
 
-const addWeeklyDay = (dayValue: number) => {
+const addWeeklyDay = (dayValue) => {
   weeklySchedules.value.push({
     id: Math.random().toString(36).substr(2, 9),
     doctorId: selectedWeeklyDoctorId.value,
     dayOfWeek: dayValue,
-    startTime: '09:00',
-    endTime: '17:00',
+    startTime: "09:00",
+    endTime: "17:00",
     slotDuration: 30,
-    isActive: true
+    isActive: true,
   });
 };
 
-const removeWeeklyDay = (dayValue: number) => {
-  const index = weeklySchedules.value.findIndex(s => s.doctorId === selectedWeeklyDoctorId.value && s.dayOfWeek === dayValue);
+const removeWeeklyDay = (dayValue) => {
+  const index = weeklySchedules.value.findIndex(
+    (s) =>
+      s.doctorId === selectedWeeklyDoctorId.value && s.dayOfWeek === dayValue,
+  );
   if (index !== -1) weeklySchedules.value.splice(index, 1);
 };
 
 // Exception Methods
 const handleAddException = () => {
-  const doctor = MOCK_DOCTORS.find(d => d.id === newException.value.doctorId);
+  const doctor = MOCK_DOCTORS.find((d) => d.id === newException.value.doctorId);
   if (!doctor || !selectedDate.value) return;
 
   exceptions.value.push({
@@ -489,15 +482,21 @@ const handleAddException = () => {
     startTime: newException.value.startTime,
     endTime: newException.value.endTime,
     slotDuration: 30, // Default for exceptions
-    isAvailable: newException.value.isAvailable === 'true',
+    isAvailable: newException.value.isAvailable === "true",
     reason: newException.value.reason,
   });
 
   exceptionDialogOpen.value = false;
-  newException.value = { doctorId: '', startTime: '09:00', endTime: '17:00', isAvailable: 'false', reason: '' };
+  newException.value = {
+    doctorId: "",
+    startTime: "09:00",
+    endTime: "17:00",
+    isAvailable: "false",
+    reason: "",
+  };
 };
 
-const removeException = (id: string) => {
-  exceptions.value = exceptions.value.filter(e => e.id !== id);
+const removeException = (id) => {
+  exceptions.value = exceptions.value.filter((e) => e.id !== id);
 };
 </script>

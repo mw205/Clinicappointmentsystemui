@@ -173,95 +173,92 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+<script setup>
+import { ref, computed } from "vue";
 // import { Button } from '../../ui/button';
-import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Clock, Users, Search, Timer } from 'lucide-vue-next';
-import type { Appointment } from '@/types';
 
-const MOCK_WAITING_ROOM: Appointment[] = [
+const MOCK_WAITING_ROOM = [
   {
-    id: '1',
-    patientId: '1',
-    patientName: 'John Doe',
-    doctorId: '2',
-    doctorName: 'Dr. Sarah Smith',
-    date: '2026-04-19',
-    startTime: '09:00',
-    endTime: '09:30',
+    id: "1",
+    patientId: "1",
+    patientName: "John Doe",
+    doctorId: "2",
+    doctorName: "Dr. Sarah Smith",
+    date: "2026-04-19",
+    startTime: "09:00",
+    endTime: "09:30",
     duration: 30,
-    status: 'checked-in',
-    type: 'consultation',
-    checkInTime: '08:45',
+    status: "checked-in",
+    type: "consultation",
+    checkInTime: "08:45",
   },
   {
-    id: '2',
-    patientId: '3',
-    patientName: 'Jane Smith',
-    doctorId: '2',
-    doctorName: 'Dr. Sarah Smith',
-    date: '2026-04-19',
-    startTime: '09:30',
-    endTime: '10:00',
+    id: "2",
+    patientId: "3",
+    patientName: "Jane Smith",
+    doctorId: "2",
+    doctorName: "Dr. Sarah Smith",
+    date: "2026-04-19",
+    startTime: "09:30",
+    endTime: "10:00",
     duration: 30,
-    status: 'confirmed',
-    type: 'follow-up',
+    status: "confirmed",
+    type: "follow-up",
   },
   {
-    id: '3',
-    patientId: '4',
-    patientName: 'Robert Johnson',
-    doctorId: '5',
-    doctorName: 'Dr. Michael Chen',
-    date: '2026-04-19',
-    startTime: '10:00',
-    endTime: '10:15',
+    id: "3",
+    patientId: "4",
+    patientName: "Robert Johnson",
+    doctorId: "5",
+    doctorName: "Dr. Michael Chen",
+    date: "2026-04-19",
+    startTime: "10:00",
+    endTime: "10:15",
     duration: 15,
-    status: 'checked-in',
-    type: 'consultation',
-    checkInTime: '09:50',
+    status: "checked-in",
+    type: "consultation",
+    checkInTime: "09:50",
   },
 ];
 
 const queue = ref(MOCK_WAITING_ROOM);
-const searchTerm = ref('');
+const searchTerm = ref("");
 
-const calculateWaitTime = (checkInTime?: string) => {
+const calculateWaitTime = (checkInTime) => {
   if (!checkInTime) return 0;
   const now = new Date();
-  const [hours, minutes] = checkInTime.split(':');
+  const [hours, minutes] = checkInTime.split(":");
   const checkedIn = new Date();
   checkedIn.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0);
   const diffMs = now.getTime() - checkedIn.getTime();
   return Math.max(0, Math.floor(diffMs / 60000));
 };
 
-const getWaitTimeColor = (minutes: number) => {
-  if (minutes < 10) return 'text-green-600';
-  if (minutes < 20) return 'text-yellow-600';
-  return 'text-red-600';
+const getWaitTimeColor = (minutes) => {
+  if (minutes < 10) return "text-green-600";
+  if (minutes < 20) return "text-yellow-600";
+  return "text-red-600";
 };
 
 const filteredQueue = computed(() => {
-  return queue.value.filter(apt =>
-    apt.patientName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-    apt.doctorName.toLowerCase().includes(searchTerm.value.toLowerCase())
+  return queue.value.filter(
+    (apt) =>
+      apt.patientName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      apt.doctorName.toLowerCase().includes(searchTerm.value.toLowerCase()),
   );
 });
 
 const checkedInCount = computed(() => {
-  return queue.value.filter(a => a.status === 'checked-in').length;
+  return queue.value.filter((a) => a.status === "checked-in").length;
 });
 
 const avgWaitTime = computed(() => {
   const waitTimes = queue.value
-    .filter(a => a.checkInTime)
-    .map(a => calculateWaitTime(a.checkInTime));
+    .filter((a) => a.checkInTime)
+    .map((a) => calculateWaitTime(a.checkInTime));
   if (waitTimes.length === 0) return 0;
-  return waitTimes.reduce((acc, curr) => acc + curr, 0) / checkedInCount.value || 0;
+  return (
+    waitTimes.reduce((acc, curr) => acc + curr, 0) / checkedInCount.value || 0
+  );
 });
 </script>

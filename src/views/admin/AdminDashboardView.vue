@@ -163,40 +163,46 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed } from 'vue';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp, TrendingDown, DollarSign, Users, Calendar, AlertCircle, BarChart as BarChart2, PieChart } from 'lucide-vue-next';
+<script setup>
+import { computed } from "vue";
 
 const PEAK_HOURS_DATA = [
-  { hour: '9 AM', count: 12 },
-  { hour: '10 AM', count: 18 },
-  { hour: '11 AM', count: 22 },
-  { hour: '12 PM', count: 15 },
-  { hour: '1 PM', count: 10 },
-  { hour: '2 PM', count: 20 },
-  { hour: '3 PM', count: 25 },
-  { hour: '4 PM', count: 19 },
-  { hour: '5 PM', count: 8 },
+  { hour: "9 AM", count: 12 },
+  { hour: "10 AM", count: 18 },
+  { hour: "11 AM", count: 22 },
+  { hour: "12 PM", count: 15 },
+  { hour: "1 PM", count: 10 },
+  { hour: "2 PM", count: 20 },
+  { hour: "3 PM", count: 25 },
+  { hour: "4 PM", count: 19 },
+  { hour: "5 PM", count: 8 },
 ];
 
 const APPOINTMENT_STATUS_DATA = [
-  { name: 'Completed', value: 145, color: '#10b981' },
-  { name: 'No-Show', value: 23, color: '#ef4444' },
-  { name: 'Cancelled', value: 18, color: '#f59e0b' },
-  { name: 'Pending', value: 12, color: '#3b82f6' },
+  { name: "Completed", value: 145, color: "#10b981" },
+  { name: "No-Show", value: 23, color: "#ef4444" },
+  { name: "Cancelled", value: 18, color: "#f59e0b" },
+  { name: "Pending", value: 12, color: "#3b82f6" },
 ];
 
 const REVENUE_DATA = [
-  { month: 'Jan', revenue: 12500 },
-  { month: 'Feb', revenue: 15800 },
-  { month: 'Mar', revenue: 14200 },
-  { month: 'Apr', revenue: 18900 },
+  { month: "Jan", revenue: 12500 },
+  { month: "Feb", revenue: 15800 },
+  { month: "Mar", revenue: 14200 },
+  { month: "Apr", revenue: 18900 },
 ];
 
 // Computed
-const totalAppointments = computed(() => APPOINTMENT_STATUS_DATA.reduce((sum, item) => sum + item.value, 0));
-const noShowRate = computed(() => ((23 / totalAppointments.value) * 100).toFixed(1));
-const completionRate = computed(() => ((145 / totalAppointments.value) * 100).toFixed(1));
-const totalRevenue = computed(() => REVENUE_DATA.reduce((sum, item) => sum + item.revenue, 0));
+const totalAppointments = computed(() =>
+  APPOINTMENT_STATUS_DATA.reduce((sum, item) => sum + item.value, 0),
+);
+const noShowRate = computed(() =>
+  ((23 / totalAppointments.value) * 100).toFixed(1),
+);
+const completionRate = computed(() =>
+  ((145 / totalAppointments.value) * 100).toFixed(1),
+);
+const totalRevenue = computed(() =>
+  REVENUE_DATA.reduce((sum, item) => sum + item.revenue, 0),
+);
 </script>

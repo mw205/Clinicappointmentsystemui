@@ -1,16 +1,13 @@
-<script setup lang="ts">
-import type { SplitterGroupEmits, SplitterGroupProps } from "reka-ui"
-import type { HTMLAttributes } from "vue"
-import { reactiveOmit } from "@vueuse/core"
-import { SplitterGroup, useForwardPropsEmits } from "reka-ui"
-import { cn } from "@/lib/utils"
+<script setup>
+import { reactiveOmit } from "@vueuse/core";
+import { useForwardPropsEmits } from "reka-ui";
 
-const props = defineProps<SplitterGroupProps & { class?: HTMLAttributes["class"] }>()
-const emits = defineEmits<SplitterGroupEmits>()
+const props = defineProps();
+const emits = defineEmits();
 
-const delegatedProps = reactiveOmit(props, "class")
+const delegatedProps = reactiveOmit(props, "class");
 
-const forwarded = useForwardPropsEmits(delegatedProps, emits)
+const forwarded = useForwardPropsEmits(delegatedProps, emits);
 </script>
 
 <template>

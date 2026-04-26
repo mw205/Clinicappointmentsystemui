@@ -144,29 +144,22 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
-import { getDefaultRouteForRole, useAuth } from '@/composables/useAuth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Activity, Chrome, Facebook } from 'lucide-vue-next';
-import type { UserRole } from '@/types';
+<script setup>
+import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { getDefaultRouteForRole, useAuth } from "@/composables/useAuth";
 
 const router = useRouter();
 const { signup, loginWithSocial, user } = useAuth();
 
 const formData = reactive({
-  email: '',
-  password: '',
-  confirmPassword: '',
-  firstName: '',
-  lastName: '',
-  phone: '',
-  role: 'patient' as UserRole,
+  email: "",
+  password: "",
+  confirmPassword: "",
+  firstName: "",
+  lastName: "",
+  phone: "",
+  role: "patient",
 });
 
 const isLoading = ref(false);
@@ -202,7 +195,7 @@ const handleSubmit = async () => {
   }
 };
 
-const handleSocialLogin = async (provider: 'google' | 'facebook') => {
+const handleSocialLogin = async (provider) => {
   isLoading.value = true;
   try {
     await loginWithSocial(provider);

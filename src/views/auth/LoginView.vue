@@ -90,22 +90,17 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { getDefaultRouteForRole, useAuth } from '@/composables/useAuth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Activity, Chrome, Facebook } from 'lucide-vue-next';
+<script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { getDefaultRouteForRole, useAuth } from "@/composables/useAuth";
 // import { toast } from 'vue-sonner'; // You'll need to install vue-sonner
 
 const router = useRouter();
 const { login, loginWithSocial, user } = useAuth();
 
-const email = ref('');
-const password = ref('');
+const email = ref("");
+const password = ref("");
 const isLoading = ref(false);
 
 const handleLogin = async () => {
@@ -121,7 +116,7 @@ const handleLogin = async () => {
   }
 };
 
-const handleSocialLogin = async (provider: 'google' | 'facebook') => {
+const handleSocialLogin = async (provider) => {
   isLoading.value = true;
   try {
     await loginWithSocial(provider);

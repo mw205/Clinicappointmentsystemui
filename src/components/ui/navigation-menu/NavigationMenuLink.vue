@@ -1,18 +1,12 @@
-<script setup lang="ts">
-import type { NavigationMenuLinkEmits, NavigationMenuLinkProps } from "reka-ui"
-import type { HTMLAttributes } from "vue"
-import { reactiveOmit } from "@vueuse/core"
-import {
-  NavigationMenuLink,
-  useForwardPropsEmits,
-} from "reka-ui"
-import { cn } from "@/lib/utils"
+<script setup>
+import { reactiveOmit } from "@vueuse/core";
+import { useForwardPropsEmits } from "reka-ui";
 
-const props = defineProps<NavigationMenuLinkProps & { class?: HTMLAttributes["class"] }>()
-const emits = defineEmits<NavigationMenuLinkEmits>()
+const props = defineProps();
+const emits = defineEmits();
 
-const delegatedProps = reactiveOmit(props, "class")
-const forwarded = useForwardPropsEmits(delegatedProps, emits)
+const delegatedProps = reactiveOmit(props, "class");
+const forwarded = useForwardPropsEmits(delegatedProps, emits);
 </script>
 
 <template>

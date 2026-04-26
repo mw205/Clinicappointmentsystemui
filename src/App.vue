@@ -2,7 +2,7 @@
   <RouterView />
 </template>
 
-<script setup lang="ts">
+<script setup>
 // Top-level App component for Vue
 </script>
 
